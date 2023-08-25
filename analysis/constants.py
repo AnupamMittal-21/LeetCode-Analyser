@@ -1,6 +1,3 @@
-username = "Anupam_Mittal"
-password = "J=SigmaE18"
-
 PATH = r"C:\ChromeDriver\chromedriver.exe"
 DEFAULT_BROWSER = r'--user-data-dir=C:\Users\anupa\AppData\Local\Google\Chrome\User Data\Default'
 BASE_URL = "https://leetcode.com/accounts/login/"
