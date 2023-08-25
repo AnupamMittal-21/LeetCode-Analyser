@@ -3,6 +3,6 @@ with LeetAnalysis() as bot:
     bot.land_first_page()
     bot.login()
     bot.scrap_submission_page()
+    bot.scraping_each_page()
     bot.create_dataframe()
 
-    # bot.trial()

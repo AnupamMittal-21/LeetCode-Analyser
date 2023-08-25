@@ -5,6 +5,7 @@ import time
 import pandas as pd
 from selenium import webdriver
 import pickle
+import re
 
 
 class LeetAnalysis(webdriver.Chrome):
@@ -94,12 +95,21 @@ class LeetAnalysis(webdriver.Chrome):
         ques_list = []
         # To store link pf uniques ques, used to go to each question after scrapping from submission page
         ques_link_list = []
+        cnt = 0
 
         while condition:
-        # cnt = 2
-        # while cnt:
+            cnt += 1
+            if cnt % 10 == 0:
+                time.sleep(10)
+            print(f'Page No : {cnt}')
             self.implicitly_wait(15)
-            question_table = self.find_element(By.CSS_SELECTOR, 'div#submission-list-app>div>table>thead+tbody')
+            try:
+                question_table = self.find_element(By.CSS_SELECTOR, 'div#submission-list-app>div>table>thead+tbody')
+            except:
+                self.get(self.current_url)
+                self.implicitly_wait(10)
+                question_table = self.find_element(By.CSS_SELECTOR, 'div#submission-list-app>div>table>thead+tbody')
+
             # Getting table where all submission are stored of a particular page.
             tr_list = question_table.find_elements(By.CSS_SELECTOR, 'tr')
             for tr in tr_list:  # tr is each row and each row has some td-s
@@ -107,12 +117,12 @@ class LeetAnalysis(webdriver.Chrome):
 
                 if ques_name not in ques_list:  # To get uniques
                     ques_list.append(ques_name)
-                    ques_link = tr.find_element(By.CSS_SELECTOR,
-                                                'td:nth-child(3)>a')  # Finding link of those uniques only
+                    ques_link = tr.find_element(By.CSS_SELECTOR, 'td:nth-child(3)>a')
+                    # Finding link of those uniques only
                     ques_link_list.append(ques_link.get_attribute('href'))
 
-            print(f"length of table on submission page is {len(tr_list)}")
-            print(ques_link_list)  # this prints the count of all the submission on a page
+            # print(f"length of table on submission page is {len(tr_list)}")
+            # print(ques_link_list)  # this prints the count of all the submission on a page
 
             if self.find_element(By.XPATH, '//*[@id="submission-list-app"]/div/nav/ul/li[2]').get_attribute(
                     'class') == 'next disabled':
@@ -127,15 +137,21 @@ class LeetAnalysis(webdriver.Chrome):
         self.ques_link_list = ques_link_list
         print(f"The total submissions are : {len(self.ques_link_list)}")
 
-        print("Travsersed all the submission pages")
+        print("Traversed all the submission pages")
 
-        # WORKING TILL HERE
-
+    def scraping_each_page(self):
         # Going to each page of questions using the list we created
+        cnt = 0
         for ques_link in self.ques_link_list:
+            cnt += 1
+            if cnt % 10 == 0:
+                time.sleep(5)
             self.get(ques_link)
-            # time.sleep(3)
+
+            print(ques_link)
+
             self.implicitly_wait(10)
+
             ques_problem_link = self.find_element(By.CSS_SELECTOR, 'a.inline-wrap')
             ques_problem_link.click()
             # Clicking on ques name as on this page not much data is to scrap
@@ -145,76 +161,85 @@ class LeetAnalysis(webdriver.Chrome):
             # This is used because there are contest submission pages too and they have different page when we hit submission
             curr_url = self.current_url
             if 'contest' in curr_url:
-                curr_url = curr_url.replace('contest/weekly-contest-359/','')
+                curr_url = re.sub(r'contest/(bi)?weekly-contest-(\d)*/', '', curr_url)
                 self.get(curr_url)
 
-            # time.sleep(5)
             self.implicitly_wait(10)
 
             # Now we are on question description page, now we are going to extract data from this page and submission page
+            try:
+                # Extracting from description page
+                try:
+                    question_id = self.find_element(By.XPATH,
+                                                    '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[1]/div[1]/div/a').text.split(
+                        '. ')[0]
+                except:
+                    self.get(self.current_url)
+                    self.implicitly_wait(10)
+                    question_id = self.find_element(By.XPATH,
+                                                    '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[1]/div[1]/div/a').text.split(
+                        '. ')[0]
 
-            # Extracting from description page
-            question_id = self.find_element(By.XPATH,
-                                            '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[1]/div[1]/div/a').text.split(
-                '. ')[0]
-            question_name = self.find_element(By.XPATH,
-                                              '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[1]/div[1]/div/a').text.split(
-                '. ')[1]
-            question_diff = self.find_element(By.XPATH,
-                                              '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div[1]').text
-            question_likes = self.find_element(By.XPATH,
-                                               '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[1]/div[2]').text
-            question_dislikes = self.find_element(By.XPATH,
-                                                  '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[2]/div[2]').text
-            question_acceptance_rate = self.find_element(By.XPATH,
-                                                         '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[4]/div/div[5]/div[2]').text
-            # ques_tags_list = None
-            self.implicitly_wait(10)
+                question_name = self.find_element(By.XPATH,
+                                                  '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[1]/div[1]/div/a').text.split(
+                    '. ')[1]
+                question_diff = self.find_element(By.XPATH,
+                                                  '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div[1]').text
+                question_likes = self.find_element(By.XPATH,
+                                                   '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[1]/div[2]').text
+                question_dislikes = self.find_element(By.XPATH,
+                                                      '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[2]/div[2]').text
+                question_acceptance_rate = self.find_element(By.XPATH,
+                                                             '//*[@id="qd-content"]/div[1]/div/div/div/div[2]/div/div/div[4]/div/div[5]/div[2]').text
+                # ques_tags_list = None
+                self.implicitly_wait(10)
 
-            # Extracting related tags and tags link
+                # Extracting related tags and tags link
 
-            # this is div where toggle button and data is present
-            question_tag_div = self.find_elements(By.CSS_SELECTOR, 'div.px-5.py-3')[-1]
-            # Toggle button is clicked
-            question_tag_div.find_element(By.CSS_SELECTOR, 'svg').click()
-            # Each anchor tag is listed
-            tags_div = self.find_element(By.CSS_SELECTOR, 'div.mt-2.flex.flex-wrap.gap-y-3')
-            tag_div_list = tags_div.find_elements(By.CSS_SELECTOR, 'a')
+                # this is div where toggle button and data is present
+                question_tag_div = self.find_elements(By.CSS_SELECTOR, 'div.px-5.py-3')[-1]
+                # Toggle button is clicked
+                question_tag_div.find_element(By.CSS_SELECTOR, 'svg').click()
+                # Each anchor tag is listed
+                tags_div = self.find_element(By.CSS_SELECTOR, 'div.mt-2.flex.flex-wrap.gap-y-3')
+                tag_div_list = tags_div.find_elements(By.CSS_SELECTOR, 'a')
 
-            tag_list_per_question = []
-            tags_link_list = []
+                tag_list_per_question = []
+                tags_link_list = []
 
-            # Looping in anchor tags list
-            for ques_tag in tag_div_list:
-                tag_list_per_question.append(ques_tag.text)
-                tags_link_list.append(ques_tag.get_attribute('href'))
+                # Looping in anchor tags list
+                for ques_tag in tag_div_list:
+                    tag_list_per_question.append(ques_tag.text)
+                    tags_link_list.append(ques_tag.get_attribute('href'))
 
-            # Now, moving on to submission section of the question.
+                # Now, moving on to submission section of the question.
 
-            submission_nav_bar = self.find_element(By.CSS_SELECTOR, 'div.flex.h-full.flex-row.gap-8')  # Top bar
-            submission_btn_on_page = submission_nav_bar.find_elements(By.CSS_SELECTOR, 'a')[-1]  # Submission btn
-            submission_btn_on_page.click()
-            self.implicitly_wait(10)
+                submission_nav_bar = self.find_element(By.CSS_SELECTOR, 'div.flex.h-full.flex-row.gap-8')  # Top bar
+                submission_btn_on_page = submission_nav_bar.find_elements(By.CSS_SELECTOR, 'a')[-1]  # Submission btn
+                submission_btn_on_page.click()
+                self.implicitly_wait(10)
 
-            # This is table of all the submission on that particular question
-            submission_container = self.find_element(By.CSS_SELECTOR,
-                                                     '#qd-content > div.h-full.flex-col.ssg__qd-splitter-primary-w > div > div > div > div.flex.h-full.w-full.overflow-y-auto.rounded-b > div > div.h-full.px-4')
-            ques_div_list = submission_container.find_elements(By.CSS_SELECTOR, 'span')
-            for i, ques_div in enumerate(ques_div_list):
-                if i % 3 == 0:
-                    self.status_list.append(ques_div.text)
-                elif i % 3 == 1:
-                    self.time_list.append(ques_div.text)
-                else:
-                    self.ques_id.append(question_id)
-                    self.ques_name.append(question_name)
-                    self.ques_difficulty.append(question_diff)
-                    self.ques_likes.append(question_likes)
-                    self.ques_dislike.append(question_dislikes)
-                    self.ques_acceptance_rate.append(question_acceptance_rate)
-                    self.ques_links.append(ques_link)
-                    self.ques_tags.append(tag_list_per_question)
-                    self.ques_tags_links.append(tags_link_list)
+                # This is table of all the submission on that particular question
+                submission_container = self.find_element(By.CSS_SELECTOR,
+                                                         '#qd-content > div.h-full.flex-col.ssg__qd-splitter-primary-w > div > div > div > div.flex.h-full.w-full.overflow-y-auto.rounded-b > div > div.h-full.px-4')
+                ques_div_list = submission_container.find_elements(By.CSS_SELECTOR, 'span')
+                for i, ques_div in enumerate(ques_div_list):
+                    if i % 3 == 0:
+                        self.status_list.append(ques_div.text)
+                    elif i % 3 == 1:
+                        self.time_list.append(ques_div.text)
+                    else:
+                        self.ques_id.append(question_id)
+                        self.ques_name.append(question_name)
+                        self.ques_difficulty.append(question_diff)
+                        self.ques_likes.append(question_likes)
+                        self.ques_dislike.append(question_dislikes)
+                        self.ques_acceptance_rate.append(question_acceptance_rate)
+                        self.ques_links.append(ques_link)
+                        self.ques_tags.append(tag_list_per_question)
+                        self.ques_tags_links.append(tags_link_list)
+            except:
+                print("Some exception")
 
     def create_dataframe(self):
         time.sleep(3)
@@ -238,14 +263,5 @@ class LeetAnalysis(webdriver.Chrome):
         print('Completed Successfully')
 
     # https://youtu.be/3wZ7GRbr91g?si=m80mfcIvQ2xNz-SA == nice video to learn
-    def trial(self):
-        self.get('https://leetcode.com/problems/search-a-2d-matrix/')
-        self.implicitly_wait(4)
-        question_dislikes = self.find_elements(By.CSS_SELECTOR, 'div.px-5.py-3')[-1]
-        question_dislikes.find_element(By.CSS_SELECTOR, 'svg').click()
-        tags_div = self.find_element(By.CSS_SELECTOR, 'div.mt-2.flex.flex-wrap.gap-y-3')
-        tag_div_list = tags_div.find_elements(By.CSS_SELECTOR, 'a')
-        print(len(tag_div_list))
-        for tags in tag_div_list:
-            print(tags.text)
-            print(tags.get_attribute('href'))
+    # With this the scope of this file ends...
+    # It was great, building this project...
