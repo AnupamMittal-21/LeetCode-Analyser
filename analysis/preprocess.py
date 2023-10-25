@@ -6,11 +6,7 @@ import pandas as pd
 from selenium import webdriver
 import pickle
 import re
-
-# https://leetcode.com/submissions/detail/1027620150/ --> Repeated Substring Pattern (Topmost before 2 month submission)
-# The purpose of the above info is to get unique characteristics in my submissions
-# I will only go gor the submission till it is not equal to this one
-# Are basically kl pura df na banana pade aisa kaam kr dena based on the above feature.
+import subprocess
 
 class LeetAnalysis(webdriver.Chrome):
 
@@ -27,7 +23,10 @@ class LeetAnalysis(webdriver.Chrome):
         self.ques_description = []
         self.ques_tags = []
         self.ques_link = []
+        self.sub_link = []
         self.ques_link_list = []
+        self.df = None
+
 
         #  Setting path of chrome driver from local directory
         os.environ['PATH'] += r"C:\ChromeDriver\chromedriver.exe"
@@ -44,6 +43,21 @@ class LeetAnalysis(webdriver.Chrome):
         if self.teardown:
             self.quit()
 
+    def load_df(self):
+        if os.path.exists('leet_dict.pkl'):
+            # If the CSV file exists, load it into a DataFrame
+            print("CSV File exists...\nloading file...")
+            leet_dict = pickle.load(open('leet_dict.pkl', 'rb'))
+            self.df = pd.DataFrame(leet_dict)
+        else:
+            dict = {'Status': self.status_list, 'DateOfSubmission': self.date_list, 'Name': self.ques_name,
+                    'ID': self.ques_id, 'Link': self.ques_link, 'Difficulty': self.ques_difficulty,
+                    'Tags': self.ques_tags, 'Description': self.ques_description, 'Sub_Link': self.sub_link}
+
+            self.df = pd.DataFrame(dict)
+            print("CSV File not found...\nCreating empty dataframe")
+            print(self.df)
+
     def land_ques_page(self):
         # This functions just open the browser with the given link
         self.get(const.QUES_URL)
@@ -51,6 +65,132 @@ class LeetAnalysis(webdriver.Chrome):
     # Working...
     # Id, Name, Description, Difficulty, Tags, link of question, Submission status and date.
     # I also tried to get the submission link and the time but it is not working well.
+
+    # Working
+    def land_first_page(self):
+        # This functions just open the browser with the given link
+        self.get(const.BASE_URL)
+
+    # Without login part is working...
+    def login(self):
+        # I am using try except here because I have 2 options
+        # 1 = I need to log in so need to scrap login button and then pass arguments
+        # 2 = I am already logged in that browser.
+        try:
+            self.implicitly_wait(10)  # Giving time to load the page, so that the below tags are loaded to be extracted
+            login_input = self.find_element(By.CSS_SELECTOR, 'input[name="login"]')  # Accessing username textfield
+            pass_input = self.find_element(By.CSS_SELECTOR, 'input[name="password"]')  # Accessing password textfield
+
+            login_input.send_keys(const.username)  # Passing username
+            self.implicitly_wait(10)
+            pass_input.send_keys(const.password)  # Passing password
+
+            login_btn = self.find_element(By.CSS_SELECTOR, 'button#signin_btn')  # Login button
+            self.implicitly_wait(10)  # To tackle captcha problem otherwise captcha comes
+            time.sleep(2)  # To tackle captcha problem otherwise captcha comes
+            login_btn.click()  # Clicking on login button
+            self.implicitly_wait(10)
+
+        except:
+            print("Already Logged In")
+
+        # Now I am at my home page where I now need to go to my profile pic button and then click on submission
+        # account_btn = self.find_elements(By.CSS_SELECTOR, 'a.ant-dropdown-link')
+        # # Account button so that we can go to submissions page
+        # account_btn[-1].click()  ## --> For previous version
+
+        account_btn = self.find_element(By.CSS_SELECTOR, 'button#headlessui-menu-button-5')
+        account_btn.click()
+        # Since there were many elements with the same class so chosen last one as it is always on the last
+        self.implicitly_wait(10)
+
+        submission_btn = self.find_element(By.CSS_SELECTOR, 'a[href="/submissions/"]')
+        # Submission button after account tab
+        submission_btn.click()
+        time.sleep(3)  # Time given to load next page before scraping
+        self.implicitly_wait(10)
+        # Now after this function we are at submission page now we have to iterate through all the pages of submission
+        # and then go to uniques question pages and then extract more information from there as there only is exact data
+
+
+    # Working
+    def scrap_submission_page(self):
+
+        # This condition is set to true so that I can traverse in submission page list then in all the pages.
+        condition = True
+
+        # To store uniques ques
+        ques_list = []
+
+        # To store link pf uniques ques, used to go to each question after scrapping from submission page
+        ques_link_list = []
+        cnt = 0
+
+        while condition:
+            cnt += 1
+            if cnt % 10 == 0:
+                time.sleep(10)
+            print(f'Page No : {cnt}')
+            self.implicitly_wait(15)
+
+            url_ = f'https://leetcode.com/submissions/#/{cnt}'
+            self.get(url_)
+            try:
+                question_table = self.find_element(By.CSS_SELECTOR,
+                                                   'table.table.table-striped.table-bordered.table-hover>tbody')
+            except:
+                self.implicitly_wait(10)
+                # question_table = self.find_element(By.CSS_SELECTOR, 'div#submission-list-app>div>table>thead+tbody')
+                question_table = self.find_element(By.CSS_SELECTOR,
+                                                   'table.table.table-striped.table-bordered.table-hover>tbody')
+
+            # Getting table where all submission are stored of a particular page.
+            tr_list = question_table.find_elements(By.CSS_SELECTOR, 'tr')
+
+            # Print for Debugging
+            # print(tr_list[0].text)
+            # ques_name = tr_list[0].find_element(By.CSS_SELECTOR, 'td:nth-child(2)')
+            # print(ques_name.text
+
+            for tr in tr_list:  # tr is each row and each row has some td-s
+                ques_name = tr.find_element(By.CSS_SELECTOR, 'td:nth-child(2)').text  # second child is name of question
+
+                if ques_name not in ques_list:  # To get uniques
+                    ques_list.append(ques_name)
+                    ques_link = tr.find_element(By.CSS_SELECTOR, 'td:nth-child(3)>a')
+
+                    if self.df.shape[0]>0:
+                        print("Shape is >0.")
+
+                        result = self.df['Sub_Link'].str.contains(ques_link.get_attribute('href'))  # The 'case' parameter makes the search case-insensitive
+
+                        # 'result' is a Boolean Series where each element is True if 'string_to_check' is found in the corresponding row of 'column_name', False otherwise.
+                        # You can print the rows where the string is found:
+                        if (len(self.df[result]) > 0):
+                            print(len(self.df[result]))
+                            print("Found")
+                            print("Braking Loop...")
+                            condition = False
+                            break
+                    # Finding link of those uniques only
+                    ques_link_list.append(ques_link.get_attribute('href'))
+
+            print(f"length of table on submission page is {len(tr_list)}")
+            print(ques_link_list)  # this prints the count of all the submission on a page
+
+            if self.find_element(By.XPATH, '//*[@id="submission-list-app"]/div/nav/ul/li[2]').get_attribute(
+                    'class') == 'next disabled':
+                condition = False
+            # To check if we reached at then end, now no more submissions are left, so stop.
+            else:
+                next_btn = self.find_element(By.XPATH, '//*[@id="submission-list-app"]/div/nav/ul/li[2]/a/span')
+                next_btn.click()
+
+        self.ques_link_list = ques_link_list
+        print(f"The total submissions are : {len(self.ques_link_list)}")
+
+        print("Traversed all the submission pages")
+        return
 
     def scrap_each_page(self):
         # Going to each page of questions using the list we created
@@ -90,7 +230,8 @@ class LeetAnalysis(webdriver.Chrome):
                 except:
                     self.get(self.current_url)
                     self.implicitly_wait(10)
-                    name_column = self.find_element(By.CSS_SELECTOR, "div.flex.items-start.justify-between.gap-4>div>div")
+                    name_column = self.find_element(By.CSS_SELECTOR,
+                                                    "div.flex.items-start.justify-between.gap-4>div>div")
 
                 id_ = name_column.text.split('. ')[0]
                 name = name_column.text.split('. ')[1]
@@ -140,120 +281,9 @@ class LeetAnalysis(webdriver.Chrome):
                     self.date_list.append(date)
                     self.ques_tags.append(topics)
                     self.ques_link.append(link)
+                    self.sub_link.append(ques_link)
             except:
                 print("Some exception")
-
-
-    # Working
-    def land_first_page(self):
-        # This functions just open the browser with the given link
-        self.get(const.BASE_URL)
-
-    # Without login part is working...
-    def login(self):
-        # I am using try except here because I have 2 options
-        # 1 = I need to log in so need to scrap login button and then pass arguments
-        # 2 = I am already logged in that browser.
-        try:
-            self.implicitly_wait(10)  # Giving time to load the page, so that the below tags are loaded to be extracted
-            login_input = self.find_element(By.CSS_SELECTOR, 'input[name="login"]')  # Accessing username textfield
-            pass_input = self.find_element(By.CSS_SELECTOR, 'input[name="password"]')  # Accessing password textfield
-
-            login_input.send_keys(const.username)  # Passing username
-            self.implicitly_wait(10)
-            pass_input.send_keys(const.password)  # Passing password
-
-            login_btn = self.find_element(By.CSS_SELECTOR, 'button#signin_btn')  # Login button
-            self.implicitly_wait(10)  # To tackle captcha problem otherwise captcha comes
-            time.sleep(2)  # To tackle captcha problem otherwise captcha comes
-            login_btn.click()  # Clicking on login button
-            self.implicitly_wait(10)
-
-        except:
-            print("Already Logged In")
-
-        # Now I am at my home page where I now need to go to my profile pic button and then click on submission
-        # account_btn = self.find_elements(By.CSS_SELECTOR, 'a.ant-dropdown-link')
-        # # Account button so that we can go to submissions page
-        # account_btn[-1].click()  ## --> For previous version
-
-        account_btn = self.find_element(By.CSS_SELECTOR, 'button#headlessui-menu-button-5')
-        account_btn.click()
-        # Since there were many elements with the same class so chosen last one as it is always on the last
-        self.implicitly_wait(10)
-
-        submission_btn = self.find_element(By.CSS_SELECTOR, 'a[href="/submissions/"]')
-        # Submission button after account tab
-        submission_btn.click()
-        time.sleep(3)  # Time given to load next page before scraping
-        self.implicitly_wait(10)
-        # Now after this function we are at submission page now we have to iterate through all the pages of submission
-        # and then go to uniques question pages and then extract more information from there as there only is exact data
-
-    # Working
-    def scrap_submission_page(self):
-
-        # This condition is set to true so that I can traverse in submission page list then in all the pages.
-        condition = True
-
-        # To store uniques ques
-        ques_list = []
-
-        # To store link pf uniques ques, used to go to each question after scrapping from submission page
-        ques_link_list = []
-        cnt = 0
-
-        while condition:
-            cnt += 1
-            if cnt % 10 == 0:
-                time.sleep(10)
-            print(f'Page No : {cnt}')
-            self.implicitly_wait(15)
-
-            url_ = f'https://leetcode.com/submissions/#/{cnt}'
-            self.get(url_)
-            try:
-                question_table = self.find_element(By.CSS_SELECTOR,
-                                                   'table.table.table-striped.table-bordered.table-hover>tbody')
-            except:
-                self.implicitly_wait(10)
-                # question_table = self.find_element(By.CSS_SELECTOR, 'div#submission-list-app>div>table>thead+tbody')
-                question_table = self.find_element(By.CSS_SELECTOR,
-                                                   'table.table.table-striped.table-bordered.table-hover>tbody')
-
-            # Getting table where all submission are stored of a particular page.
-            tr_list = question_table.find_elements(By.CSS_SELECTOR, 'tr')
-
-            # Print for Debugging
-            # print(tr_list[0].text)
-            # ques_name = tr_list[0].find_element(By.CSS_SELECTOR, 'td:nth-child(2)')
-            # print(ques_name.text
-
-            for tr in tr_list:  # tr is each row and each row has some td-s
-                ques_name = tr.find_element(By.CSS_SELECTOR, 'td:nth-child(2)').text  # second child is name of question
-
-                if ques_name not in ques_list:  # To get uniques
-                    ques_list.append(ques_name)
-                    ques_link = tr.find_element(By.CSS_SELECTOR, 'td:nth-child(3)>a')
-                    # Finding link of those uniques only
-                    ques_link_list.append(ques_link.get_attribute('href'))
-
-            print(f"length of table on submission page is {len(tr_list)}")
-            print(ques_link_list)  # this prints the count of all the submission on a page
-
-            if self.find_element(By.XPATH, '//*[@id="submission-list-app"]/div/nav/ul/li[2]').get_attribute(
-                    'class') == 'next disabled':
-                condition = False
-            # To check if we reached at then end, now no more submissions are left, so stop.
-            else:
-                next_btn = self.find_element(By.XPATH, '//*[@id="submission-list-app"]/div/nav/ul/li[2]/a/span')
-                next_btn.click()
-
-        self.ques_link_list = ques_link_list
-        print(f"The total submissions are : {len(self.ques_link_list)}")
-
-        print("Traversed all the submission pages")
-        return
 
    # Working...
     def create_dataframe(self):
@@ -261,21 +291,28 @@ class LeetAnalysis(webdriver.Chrome):
         #  creating dictionary for easy pickling
         dict = {'Status': self.status_list, 'DateOfSubmission': self.date_list, 'Name': self.ques_name,
                 'ID': self.ques_id, 'Link': self.ques_link, 'Difficulty': self.ques_difficulty,
-                'Tags': self.ques_tags, 'Description': self.ques_description}
+                'Tags': self.ques_tags, 'Description': self.ques_description,'Sub_Link': self.sub_link}
 
-        df = pd.DataFrame(dict)
-        pickle.dump(df.to_dict(), open('leet_dict.pkl', 'wb'))
-        print(df)
+        temp_df = pd.DataFrame(dict)
+        self.df = pd.concat([temp_df,self.df],axis=0)
+        pickle.dump(self.df.to_dict(), open('leet_dict.pkl', 'wb'))
+        print(self.df)
         print('#######################################################################################################')
-        print(df['Tags'])
+        print(self.df['Tags'])
         print('#######################################################################################################')
-        print(df['Link'])
+        print(self.df['Link'])
         print('#######################################################################################################')
-        print(df['ID'])
+        print(self.df['ID'])
         print('#######################################################################################################')
-        print(df['DateOfSubmission'])
+        print(self.df['DateOfSubmission'])
         print('#######################################################################################################')
         print('Completed Successfully')
+
+
+    def show_visuals(self):
+        # This is to run the streamlit file using function call automatically, rather than manually by writting streamlit run file.py
+        streamlit_app_file = "analysis/visualisation.py"
+        subprocess.call(["streamlit", "run", streamlit_app_file])
 
     # https://youtu.be/3wZ7GRbr91g?si=m80mfcIvQ2xNz-SA == nice video to learn
     # With this the scope of this file ends...
