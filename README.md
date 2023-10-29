@@ -12,19 +12,59 @@ LeetCode Progress Visualizer is a Python project that enables users to monitor a
 
 - **Visualizations**: LeetCode Progress Visualizer offers a Streamlit web application with various visualization options:
 
+Submission Trend 
+
     - **Accepted Submissions by Year and Status**: A bar plot that shows the count of accepted submissions over the years, with filters for submission status (Accepted, Runtime Error, Time Limit Exceeded).
+ 
+    - ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/028d44fe-248f-4db1-a20c-e4dc1c0292eb)
+
 
     - **Accepted Submissions by Year and Difficulty**: Another bar plot illustrating the count of accepted submissions over the years, categorized by difficulty.
+ 
+    - ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/a9272670-7939-47b2-90ab-33fcb37a0632)
+
 
     - **Topic-wise Analysis**: Users can select specific tags and see the submission trends in a bar plot.
 
+    ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/2cc56573-28c1-41aa-a875-324b0c9a2e9b)
+
+ 
+    - 
+Improvement Rate 
+
     - **Improvement Rate per Month**: A line plot that represents the trend of submission counts over time, showing consistency and progress.
 
-    - **Improvement Rate per Week**: Similar to the monthly plot but with more detailed data at the week level.
+    ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/2d6398c0-46f5-4639-951e-56999eea2f03)
 
-    - **Topic-wise Analysis**: This section includes two plots: a heatmap and a scatter plot. The heatmap displays variations in submissions per topic, while the scatter plot shows the relationship between topic submissions and performance.
+
+    - **Improvement Rate per Week**: Similar to the monthly plot but with more detailed data at the week level.
+    
+    ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/d2d977d9-6409-4a0f-9648-72c06d5ffa07)
+
+    - ** Month-Wise Status**: See the number and submissions in a month with status.
+    
+
+    ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/e8d4d83c-dd73-4d35-b31c-d09fc47d87aa)
+
+
+**Topic-wise Analysis**: This section includes two plots: a heatmap and a scatter plot. 
+
+    ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/047abc6b-8ff8-472d-9259-c13b506cc8ff)
+    ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/c236815f-a4c0-4814-aacd-2e44419d0d77)
+
+
+    - The heatmap displays variations in submissions per topic, while the scatter plot shows the relationship between topic submissions and performance.
 
 - **Topic Recommendations**: The project offers recommendations for weak and weakest topics in Dynamic Programming, based on accepted questions from the dataset. It identifies the weakest topics with the lowest percentage and weak topics below user-defined threshold values.
+    - Weakest Topics -
+    - ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/8a696abc-e3dd-4af0-a433-0c09cbde188b)
+
+    - Weak Topics
+    - ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/60eff03a-1140-4e03-8d9d-6c54dd3db9d4)
+
+    - Question category counts Done/ Not Done
+    -
+    - ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/981dcb76-04da-4d3a-9c36-463a5712c0a4)
 
 - **Demo Video**: You can watch a demo video of the project [here](https://example.com).
 
