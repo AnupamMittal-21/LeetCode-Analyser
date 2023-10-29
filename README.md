@@ -17,6 +17,7 @@ Submission Trend
     - **Accepted Submissions by Year and Status**: A bar plot that shows the count of accepted submissions over the years, with filters for submission status (Accepted, Runtime Error, Time Limit Exceeded).
  
     - ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/028d44fe-248f-4db1-a20c-e4dc1c0292eb)
+    
 
 
     - **Accepted Submissions by Year and Difficulty**: Another bar plot illustrating the count of accepted submissions over the years, categorized by difficulty.
@@ -236,47 +237,57 @@ The scraped data is stored in a DataFrame. On subsequent runs, the program conti
 
 **Accepted Submissions by Year and Status**:
 
-![Accepted Submissions by Year and Status](https://example.com/accepted_submissions_status.png)
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/028d44fe-248f-4db1-a20c-e4dc1c0292eb)
 
 A bar plot that shows the count of accepted submissions over the years, with filters for submission status (Accepted, Runtime Error, Time Limit Exceeded).
 
 **Accepted Submissions by Year and Difficulty**:
 
-![Accepted Submissions by Year and Difficulty](https://example.com/accepted_submissions_difficulty.png)
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/a9272670-7939-47b2-90ab-33fcb37a0632)
 
 Another bar plot illustrating the count of accepted submissions over the years, categorized by difficulty.
 
 **Topic-wise Analysis**:
 
-![Topic-wise Analysis](https://example.com/topic_wise_analysis.png)
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/e8d4d83c-dd73-4d35-b31c-d09fc47d87aa)
 
 Users can select specific tags and see the submission trends in a bar plot.
 
 **Improvement Rate per Month**:
 
-![Improvement Rate per Month](https://example.com/improvement_rate_monthly.png)
-
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/2d6398c0-46f5-4639-951e-56999eea2f03)
 A line plot that represents the trend of submission counts over time, showing consistency and progress.
 
 **Improvement Rate per Week**:
 
-![Improvement Rate per Week](https://example.com/improvement_rate_weekly.png)
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/d2d977d9-6409-4a0f-9648-72c06d5ffa07)
 
 Similar to the monthly plot but with more detailed data at the week level.
+
+**Month-Wise Status**: 
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/e8d4d83c-dd73-4d35-b31c-d09fc47d87aa)
+
+See the number and submissions in a month with status.
+    
+
 
 #### Topic Recommendations
 
 **Weakest Topics**:
 
-![Weakest Topics](https://example.com/weakest_topics.png)
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/047abc6b-8ff8-472d-9259-c13b506cc8ff)
 
 Recommendations for the weakest topics in Dynamic Programming, based on accepted questions from the dataset.
 
 **Weak Topics**:
 
-![Weak Topics](https://example.com/weak_topics.png)
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/c236815f-a4c0-4814-aacd-2e44419d0d77)
 
 Recommendations for weak topics based on user-defined threshold values.
+
+**Question category counts Done/ Not Done**:
+
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/981dcb76-04da-4d3a-9c36-463a5712c0a4)
 
 ### Demo
 
