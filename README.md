@@ -215,9 +215,7 @@ Follow these steps to set up LeetCode Progress Visualizer:
 
 
 
-Sure, it seems you want to include images in your README and format it properly. Below is an improved version of your README with properly formatted headings and images:
 
-```markdown
 # LeetCode Analyser
 
 ## Overview
@@ -294,8 +292,6 @@ To get started with LeetCode Analyser, follow these steps:
 
    ```bash
    git clone https://github.com/yourusername/leetcode-analyser.git
-   ```
-
 2. Navigate to the project directory:
 
    ```bash
