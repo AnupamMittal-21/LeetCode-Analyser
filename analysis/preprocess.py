@@ -13,6 +13,7 @@ class LeetAnalysis(webdriver.Chrome):
     def __init__(self, driver_path=r"C:\ChromeDrive\chromedriver.exe", teardown=False):
 
         # All the lists are used to store data and at last used to convert to dataframe
+        self.dp_df_ = None
         self.driver_path = driver_path
         self.teardown = teardown
         self.ques_id = []
@@ -61,7 +62,6 @@ class LeetAnalysis(webdriver.Chrome):
     def land_ques_page(self):
         # This functions just open the browser with the given link
         self.get(const.QUES_URL)
-
     # Working...
     # Id, Name, Description, Difficulty, Tags, link of question, Submission status and date.
     # I also tried to get the submission link and the time but it is not working well.
@@ -136,10 +136,14 @@ class LeetAnalysis(webdriver.Chrome):
             url_ = f'https://leetcode.com/submissions/#/{cnt}'
             self.get(url_)
             try:
+                # Page number 31 - Error (DEBUG)
                 question_table = self.find_element(By.CSS_SELECTOR,
                                                    'table.table.table-striped.table-bordered.table-hover>tbody')
             except:
                 self.implicitly_wait(10)
+                # url_ = f'https://leetcode.com/submissions/#/{cnt}'
+                self.get(self.current_url)
+                self.implicitly_wait(5)
                 # question_table = self.find_element(By.CSS_SELECTOR, 'div#submission-list-app>div>table>thead+tbody')
                 question_table = self.find_element(By.CSS_SELECTOR,
                                                    'table.table.table-striped.table-bordered.table-hover>tbody')
@@ -197,93 +201,97 @@ class LeetAnalysis(webdriver.Chrome):
         cnt = 0
 
         for ques_link in self.ques_link_list:
-            cnt += 1
-
-            if cnt % 10 == 0:
-                time.sleep(5)
-            self.get(ques_link)
-
-            print(ques_link)
-
-            self.implicitly_wait(10)
-
-            ques_problem_link = self.find_element(By.CSS_SELECTOR, 'a.inline-wrap')
-            ques_problem_link.click()
-            # Clicking on ques name as on this page not much data is to scrap
-
-            self.implicitly_wait(10)
-
-            # This is used because there are contest submission pages too and they have different page when we hit submission
-            curr_url = self.current_url
-            if 'contest' in curr_url:
-                curr_url = re.sub(r'contest/(bi)?weekly-contest-(\d)*/', '', curr_url)
-                self.get(curr_url)
-
-            self.implicitly_wait(10)
-
-            # Now we are on question description page, now we are going to extract data from this page and submission page
             try:
-                # Extracting from description page
+                cnt += 1
+                if cnt % 10 == 0:
+                    time.sleep(5)
+                self.get(ques_link)
+
+                print(ques_link)
+
+                self.implicitly_wait(10)
+
+                ques_problem_link = self.find_element(By.CSS_SELECTOR, 'a.inline-wrap')
+                ques_problem_link.click()
+                # Clicking on ques name as on this page not much data is to scrap
+
+                self.implicitly_wait(10)
+
+                # This is used because there are contest submission pages too and they have different page when we hit submission
+                curr_url = self.current_url
+                if 'contest' in curr_url:
+                    curr_url = re.sub(r'contest/(bi)?weekly-contest-(\d)*/', '', curr_url)
+                    self.get(curr_url)
+
+                self.implicitly_wait(10)
+
+                # Now we are on question description page, now we are going to extract data from this page and submission page
                 try:
-                    name_column = self.find_element(By.CSS_SELECTOR,
-                                                    "div.flex.items-start.justify-between.gap-4>div>div")
+                    # Extracting from description page
+                    try:
+                        name_column = self.find_element(By.CSS_SELECTOR,
+                                                        "div.flex.items-start.justify-between.gap-4>div>div")
+                    except:
+                        self.get(self.current_url)
+                        self.implicitly_wait(10)
+                        name_column = self.find_element(By.CSS_SELECTOR,
+                                                        "div.flex.items-start.justify-between.gap-4>div>div")
+
+                    id_ = name_column.text.split('. ')[0]
+                    name = name_column.text.split('. ')[1]
+
+                    description = self.find_element(By.CSS_SELECTOR, 'div[data-track-load="description_content"]').text
+
+                    # Extracting Tags and difficulty is a lot of work to do...
+                    parent_div = self.find_element(By.CSS_SELECTOR,
+                                                   'div.flex.w-full.flex-1.flex-col.gap-4.overflow-y-auto.px-4.py-5')
+
+                    tag_col = parent_div.find_elements(By.CSS_SELECTOR, 'div.flex.gap-1')[1]
+                    tag_col_list = tag_col.find_elements(By.CSS_SELECTOR, '*')
+
+                    diff = tag_col_list[0].text
+
+                    topic = tag_col_list[1]
+                    topic.click()
+                    time.sleep(2)
+
+                    topic_list = self.find_element(By.CSS_SELECTOR, 'div.mb-4.flex.flex-wrap.gap-3').text
+                    topics = topic_list.split('\n')
+
+                    # Now, moving on to submission section of the question.
+
+                    # Updating link itself rather than searching the submission button and clicking on it.
+                    url_ = self.current_url
+                    link = url_
+                    url_ = url_ + 'submissions/'
+                    self.get(url_)
+                    time.sleep(3)
+
+                    submission_cont = self.find_element(By.CSS_SELECTOR, 'div.h-full.overflow-auto')
+                    submissions_list = submission_cont.find_elements(By.CSS_SELECTOR,
+                                                                     'div.group.flex.cursor-pointer.items-center.justify-between')
+
+                    for submission in submissions_list:
+                        status_ = submission.find_element(By.CSS_SELECTOR,
+                                                          "div.flex.flex-shrink-0.flex-col.justify-between").text
+                        status_list = status_.split('\n')
+                        status = status_list[0]
+                        date = status_list[1]
+                        self.ques_id.append(id_)
+                        self.ques_name.append(name)
+                        self.ques_description.append(description)
+                        self.ques_difficulty.append(diff)
+                        self.status_list.append(status)
+                        self.date_list.append(date)
+                        self.ques_tags.append(topics)
+                        self.ques_link.append(link)
+                        self.sub_link.append(ques_link)
                 except:
-                    self.get(self.current_url)
-                    self.implicitly_wait(10)
-                    name_column = self.find_element(By.CSS_SELECTOR,
-                                                    "div.flex.items-start.justify-between.gap-4>div>div")
+                    print("Some exception")
 
-                id_ = name_column.text.split('. ')[0]
-                name = name_column.text.split('. ')[1]
-
-                description = self.find_element(By.CSS_SELECTOR, 'div[data-track-load="description_content"]').text
-
-                # Extracting Tags and difficulty is a lot of work to do...
-                parent_div = self.find_element(By.CSS_SELECTOR,
-                                               'div.flex.w-full.flex-1.flex-col.gap-4.overflow-y-auto.px-4.py-5')
-
-                tag_col = parent_div.find_elements(By.CSS_SELECTOR, 'div.flex.gap-1')[1]
-                tag_col_list = tag_col.find_elements(By.CSS_SELECTOR, '*')
-
-                diff = tag_col_list[0].text
-
-                topic = tag_col_list[1]
-                topic.click()
-                time.sleep(2)
-
-                topic_list = self.find_element(By.CSS_SELECTOR, 'div.mb-4.flex.flex-wrap.gap-3').text
-                topics = topic_list.split('\n')
-
-                # Now, moving on to submission section of the question.
-
-                # Updating link itself rather than searching the submission button and clicking on it.
-                url_ = self.current_url
-                link = url_
-                url_ = url_ + 'submissions/'
-                self.get(url_)
-                time.sleep(3)
-
-                submission_cont = self.find_element(By.CSS_SELECTOR, 'div.h-full.overflow-auto')
-                submissions_list = submission_cont.find_elements(By.CSS_SELECTOR,
-                                                                 'div.group.flex.cursor-pointer.items-center.justify-between')
-
-                for submission in submissions_list:
-                    status_ = submission.find_element(By.CSS_SELECTOR,
-                                                      "div.flex.flex-shrink-0.flex-col.justify-between").text
-                    status_list = status_.split('\n')
-                    status = status_list[0]
-                    date = status_list[1]
-                    self.ques_id.append(id_)
-                    self.ques_name.append(name)
-                    self.ques_description.append(description)
-                    self.ques_difficulty.append(diff)
-                    self.status_list.append(status)
-                    self.date_list.append(date)
-                    self.ques_tags.append(topics)
-                    self.ques_link.append(link)
-                    self.sub_link.append(ques_link)
             except:
-                print("Some exception")
+                print("SOME EXCEPTION")
+
 
    # Working...
     def create_dataframe(self):
@@ -313,8 +321,6 @@ class LeetAnalysis(webdriver.Chrome):
         # This is to run the streamlit file using function call automatically, rather than manually by writting streamlit run file.py
         streamlit_app_file = "analysis/visualisation.py"
         subprocess.call(["streamlit", "run", streamlit_app_file])
-
-    # https://youtu.be/3wZ7GRbr91g?si=m80mfcIvQ2xNz-SA == nice video to learn
     # With this the scope of this file ends...
     # It was great, building this project...
 
