@@ -38,78 +38,93 @@ The scraped data is stored in a data frame. On subsequent runs, the program cont
 
 ### Submission Trend
 
+
  - **Accepted Submissions by Year and Status**:
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/028d44fe-248f-4db1-a20c-e4dc1c0292eb)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/932f4ff4-74b5-4e66-948a-66baad00736e)
 
 A bar plot that shows the count of accepted submissions over the years, with filters for submission status (Accepted, Runtime Error, Time Limit Exceeded) and year of submission.
 
+
  - **Accepted Submissions by Year and Difficulty**:
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/a9272670-7939-47b2-90ab-33fcb37a0632)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/099c37b5-d731-42a9-9bc5-a132f5511257)
 
 Another bar plot illustrating the count of accepted submissions over the years, categorized by difficulty and year of submission.
 
+
  - **Topic-wise Analysis**:
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/2cc56573-28c1-41aa-a875-324b0c9a2e9b)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/8006404f-2a85-4346-b5d3-89cc4dc3e777)
 
 Users can select specific tags and see the submission trends in a bar plot.
 
 
+
 ### Improvement Rate
+
 
  - **Improvement Rate per Month**:
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/2d6398c0-46f5-4639-951e-56999eea2f03)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/dcca304d-00aa-4b0e-9932-d0a28d1b1357)
 
 A line plot that represents the trend of submission counts over time, showing consistency and progress.
 
+
  - **Improvement Rate per Week**:
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/d2d977d9-6409-4a0f-9648-72c06d5ffa07)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/29bca585-b742-4ea6-92c2-b41af5858aef)
 
 Similar to the monthly plot but with more detailed data at the weekly level.
 
+
  - **Month-Wise Status**: 
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/e8d4d83c-dd73-4d35-b31c-d09fc47d87aa)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/4c197c6e-0009-4cbc-9f23-250baa87a1e2)
 
 See the number and submissions in a month with status.
+
 
 
 ### Topic-Wise Analysis
 
  - **Topic-wise Analysis(HeatMap)**: 
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/047abc6b-8ff8-472d-9259-c13b506cc8ff)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/3bd283db-8e30-49ad-83f0-9d7c00f1c970)
 
 Heatmap shows submission on a particular day of each topic. 
 
+
  - **Topic-wise Analysis(ScatterPlot)**:
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/c236815f-a4c0-4814-aacd-2e44419d0d77)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/cd826a2d-d660-46cf-aa35-650857dee90e)
 
 The scatterplot shows submissions on a particular day for each topic, the larger the circle, the more submissions of that topic. 
 
 
+
 ### Question Recommendations
+
 
 **Weakest Topics**:
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/8a696abc-e3dd-4af0-a433-0c09cbde188b)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/fda8771d-cc82-4632-bb33-3165b32f7955)
 
 Recommendations for the weakest topics in Dynamic Programming, based on accepted questions from the dataset.
 
+
  - **Weak Topics**:
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/60eff03a-1140-4e03-8d9d-6c54dd3db9d4)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/892e0517-4470-437a-ab29-3049fea16b1f)
 
 Recommendations for weak topics based on user-defined threshold values.
 
+
  - **Question category counts Done/ Not Done**:
 
-![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/981dcb76-04da-4d3a-9c36-463a5712c0a4)
+![image](https://github.com/AnupamMittal-21/LeetCode-Analyser/assets/96871662/db794443-02ff-46a9-9133-c81f93ba83ea)
+
+
 
 ### Demo
 
@@ -125,6 +140,7 @@ To get started with LeetCode Analyser, follow these steps:
 
    ```bash
    git clone https://github.com/AnupamMittal-21/LeetCode-Analyser.git
+
 2. Navigate to the project directory:
 
    ```bash
