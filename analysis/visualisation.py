@@ -15,6 +15,7 @@ class Main:
         self.status_list = ['All Categories', 'Accepted', 'Wrong Answer', 'Runtime Error', 'Time Limit Exceeded']
         self.accepted_df = preprocess.accepted_questions(self.df)
         self.diff_list = ['All', 'Easy', 'Medium', 'Hard']
+        # self.diff_list = ['All', 'Easy', 'Medium', 'Hard']
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
