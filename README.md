@@ -235,17 +235,19 @@ The scraped data is stored in a DataFrame. On subsequent runs, the program conti
 
 #### Visualizations
 
+#### Submission Trend
+
 **Accepted Submissions by Year and Status**:
 
 ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/028d44fe-248f-4db1-a20c-e4dc1c0292eb)
 
-A bar plot that shows the count of accepted submissions over the years, with filters for submission status (Accepted, Runtime Error, Time Limit Exceeded).
+A bar plot that shows the count of accepted submissions over the years, with filters for submission status (Accepted, Runtime Error, Time Limit Exceeded) and year of submission.
 
 **Accepted Submissions by Year and Difficulty**:
 
 ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/a9272670-7939-47b2-90ab-33fcb37a0632)
 
-Another bar plot illustrating the count of accepted submissions over the years, categorized by difficulty.
+Another bar plot illustrating the count of accepted submissions over the years, categorized by difficulty and year of submission.
 
 **Topic-wise Analysis**:
 
@@ -253,25 +255,44 @@ Another bar plot illustrating the count of accepted submissions over the years, 
 
 Users can select specific tags and see the submission trends in a bar plot.
 
+
+#### Improvement Rate
+
 **Improvement Rate per Month**:
 
 ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/2d6398c0-46f5-4639-951e-56999eea2f03)
+
 A line plot that represents the trend of submission counts over time, showing consistency and progress.
 
 **Improvement Rate per Week**:
 
 ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/d2d977d9-6409-4a0f-9648-72c06d5ffa07)
 
-Similar to the monthly plot but with more detailed data at the week level.
+Similar to the monthly plot but with more detailed data at the weekly level.
 
 **Month-Wise Status**: 
+
 ![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/e8d4d83c-dd73-4d35-b31c-d09fc47d87aa)
 
 See the number and submissions in a month with status.
-    
 
 
-#### Topic Recommendations
+#### Topic-Wise Analysis
+
+**Topic-wise Analysis(HeatMap)**: 
+
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/047abc6b-8ff8-472d-9259-c13b506cc8ff)
+
+Heatmap shows submission on a particular day of each topic. 
+
+**Topic-wise Analysis(ScatterPlot)**:
+
+![image](https://github.com/AnupamMittal-21/LeetAnalyser_1/assets/96871662/c236815f-a4c0-4814-aacd-2e44419d0d77)
+
+The scatterplot shows submissions on a particular day for each topic, the larger the circle, the more submissions of that topic. 
+
+
+#### Question Recommendations
 
 **Weakest Topics**:
 
@@ -291,7 +312,7 @@ Recommendations for weak topics based on user-defined threshold values.
 
 ### Demo
 
-You can watch a video demonstration of the project [here](https://example.com).
+You can watch a video demonstration of the project [here](https://youtu.be/ztgmpjuMULE).
 
 Interact with the live demo of the project [here](https://example.com).
 
