@@ -199,6 +199,144 @@ Follow these steps to set up LeetCode Progress Visualizer:
 8. **Access the App**:
 
     - Open your web browser, and the app should be available at the URL `http://localhost:8501`.
+    - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sure, it seems you want to include images in your README and format it properly. Below is an improved version of your README with properly formatted headings and images:
+
+```markdown
+# LeetCode Analyser
+
+## Overview
+
+LeetCode Analyser is a Python project that empowers users to monitor and visualize their progress on the LeetCode platform. It scrapes user submission data, creates insightful visualizations, and offers recommendations to enhance performance. This README will guide you through the project's features, installation, and usage.
+
+### Features
+
+#### Data Scraping
+
+The project uses the Selenium library in Python to scrape submission data from the LeetCode website. It navigates through login, submission pages, and question pages to extract essential information, including tags, name, ID, link, difficulty, and submission details.
+
+#### Data Management
+
+The scraped data is stored in a DataFrame. On subsequent runs, the program continues from the previous DataFrame and only scrapes new submissions, reducing redundancy.
+
+#### Visualizations
+
+**Accepted Submissions by Year and Status**:
+
+![Accepted Submissions by Year and Status](https://example.com/accepted_submissions_status.png)
+
+A bar plot that shows the count of accepted submissions over the years, with filters for submission status (Accepted, Runtime Error, Time Limit Exceeded).
+
+**Accepted Submissions by Year and Difficulty**:
+
+![Accepted Submissions by Year and Difficulty](https://example.com/accepted_submissions_difficulty.png)
+
+Another bar plot illustrating the count of accepted submissions over the years, categorized by difficulty.
+
+**Topic-wise Analysis**:
+
+![Topic-wise Analysis](https://example.com/topic_wise_analysis.png)
+
+Users can select specific tags and see the submission trends in a bar plot.
+
+**Improvement Rate per Month**:
+
+![Improvement Rate per Month](https://example.com/improvement_rate_monthly.png)
+
+A line plot that represents the trend of submission counts over time, showing consistency and progress.
+
+**Improvement Rate per Week**:
+
+![Improvement Rate per Week](https://example.com/improvement_rate_weekly.png)
+
+Similar to the monthly plot but with more detailed data at the week level.
+
+#### Topic Recommendations
+
+**Weakest Topics**:
+
+![Weakest Topics](https://example.com/weakest_topics.png)
+
+Recommendations for the weakest topics in Dynamic Programming, based on accepted questions from the dataset.
+
+**Weak Topics**:
+
+![Weak Topics](https://example.com/weak_topics.png)
+
+Recommendations for weak topics based on user-defined threshold values.
+
+### Demo
+
+You can watch a video demonstration of the project [here](https://example.com).
+
+Interact with the live demo of the project [here](https://example.com).
+
+## Installation
+
+To get started with LeetCode Analyser, follow these steps:
+
+1. Clone the repository from GitHub:
+
+   ```bash
+   git clone https://github.com/yourusername/leetcode-analyser.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd leetcode-analyser
+   ```
+
+3. Install the required dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Usage
+
+1. Run the scraper script to collect LeetCode submission data:
+
+   ```bash
+   python scraper.py
+   ```
+
+2. Once you have collected the data, start the Streamlit app:
+
+   ```bash
+   streamlit run app.py
+   ```
+
+3. Visit the app in your web browser (by default, it runs on `http://localhost:8501`).
+
+4. Use the various visualization options and recommendations to track and improve your LeetCode performance.
+
+## Contributors
+
+- Your Name (YourGitHubProfile)
+- Collaborator 1 (Collaborator1GitHubProfile)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
+
+Please replace the image URLs (`https://example.com/...`) with the actual URLs of your images, and it should render correctly in your README on GitHub.
 
 9. **Interact and Visualize**:
 
